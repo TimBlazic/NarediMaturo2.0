@@ -1,9 +1,5 @@
 import ManageSubscriptionButton from './ManageSubscriptionButton';
-import {
-  getSession,
-  getUserDetails,
-  getSubscription
-} from '@/app/supabase-server';
+import { getSession, getUserDetails } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
 import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
@@ -14,10 +10,9 @@ import { redirect } from 'next/navigation';
 import { ReactNode } from 'react';
 
 export default async function Account() {
-  const [session, userDetails, subscription] = await Promise.all([
+  const [session, userDetails] = await Promise.all([
     getSession(),
-    getUserDetails(),
-    getSubscription()
+    getUserDetails()
   ]);
 
   const user = session?.user;
@@ -26,21 +21,13 @@ export default async function Account() {
     return redirect('/signin');
   }
 
-  const subscriptionPrice =
-    subscription &&
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: subscription?.prices?.currency!,
-      minimumFractionDigits: 0
-    }).format((subscription?.prices?.unit_amount || 0) / 100);
-
   const updateName = async (formData: FormData) => {
     'use server';
 
+    const user = session?.user;
     const newName = formData.get('name') as string;
     const supabase = createServerActionClient<Database>({ cookies });
-    const session = await getSession();
-    const user = session?.user;
+
     const { error } = await supabase
       .from('users')
       .update({ full_name: newName })
@@ -70,29 +57,9 @@ export default async function Account() {
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
             Account
           </h1>
-          <p className="max-w-2xl m-auto mt-5 text-xl text-zinc-200 sm:text-center sm:text-2xl">
-            We partnered with Stripe for a simplified billing.
-          </p>
         </div>
       </div>
       <div className="p-4">
-        <Card
-          title="Your Plan"
-          description={
-            subscription
-              ? `You are currently on the ${subscription?.prices?.products?.name} plan.`
-              : 'You are not currently subscribed to any plan.'
-          }
-          footer={<ManageSubscriptionButton session={session} />}
-        >
-          <div className="mt-8 mb-4 text-xl font-semibold">
-            {subscription ? (
-              `${subscriptionPrice}/${subscription?.prices?.interval}`
-            ) : (
-              <Link href="/">Choose your plan</Link>
-            )}
-          </div>
-        </Card>
         <Card
           title="Your Name"
           description="Please enter your full name, or a display name you are comfortable with."
@@ -138,7 +105,6 @@ export default async function Account() {
                 form="emailForm"
                 disabled={true}
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
                 Update Email
               </Button>
             </div>
