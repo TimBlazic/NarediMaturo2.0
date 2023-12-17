@@ -39,10 +39,12 @@ const QuizPage: React.FC = () => {
 
   return (
     <div>
-      <h1>All Questions</h1>
-      <ul>
+      <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
+        Vprašanja
+      </h1>
+      <ul className="sm:text-center">
         {questions.map((question, index) => (
-          <li key={index}>
+          <li key={index} className="m-10 border-2 border-white">
             <strong>Vprašanje: </strong> {question.question_text}
             <br></br>
             <strong>Odgovor:</strong> {question.answer}

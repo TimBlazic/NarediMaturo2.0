@@ -1,7 +1,7 @@
 import s from './Navbar.module.css';
 import SignOutButton from './SignOutButton';
 import { createServerSupabaseClient } from '@/app/supabase-server';
-import Logo from '@/components/icons/Logo';
+import { Session } from 'inspector';
 import Link from 'next/link';
 
 export default async function Navbar() {
@@ -17,11 +17,11 @@ export default async function Navbar() {
       </a>
       <div className="max-w-6xl px-6 mx-auto">
         <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
-          <div className="flex items-center flex-1">
+          <div className="flex text-3xl font-bold items-center flex-1">
             <Link href="/" className={s.logo} aria-label="Logo">
-              <Logo />
+              NarediMaturo
             </Link>
-            <nav className="hidden ml-6 space-x-2 lg:block">
+            <nav className="hidden ml-6 space-x-2 lg:block text-2xl">
               {user && (
                 <Link href="/account" className={s.link}>
                   Account

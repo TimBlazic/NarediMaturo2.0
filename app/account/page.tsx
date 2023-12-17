@@ -1,4 +1,3 @@
-import ManageSubscriptionButton from './ManageSubscriptionButton';
 import { getSession, getUserDetails } from '@/app/supabase-server';
 import Button from '@/components/ui/Button';
 import { Database } from '@/types_db';
@@ -55,25 +54,24 @@ export default async function Account() {
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
           <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-            Account
+            Profil
           </h1>
         </div>
       </div>
       <div className="p-4">
         <Card
-          title="Your Name"
-          description="Please enter your full name, or a display name you are comfortable with."
+          title="Ime"
+          description="Vnesi svoje polno ime."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">64 characters maximum</p>
+              <p className="pb-4 sm:pb-0">največ 64 znakov</p>
               <Button
                 variant="slim"
                 type="submit"
                 form="nameForm"
                 disabled={true}
               >
-                {/* WARNING - In Next.js 13.4.x server actions are in alpha and should not be used in production code! */}
-                Update Name
+                Posodobi Ime
               </Button>
             </div>
           }
@@ -85,27 +83,25 @@ export default async function Account() {
                 name="name"
                 className="w-1/2 p-3 rounded-md bg-zinc-800"
                 defaultValue={userDetails?.full_name ?? ''}
-                placeholder="Your name"
+                placeholder="Tvoje ime"
                 maxLength={64}
               />
             </form>
           </div>
         </Card>
         <Card
-          title="Your Email"
-          description="Please enter the email address you want to use to login."
+          title="Mail"
+          description="Vnesi svoj e-naslov za prijavo v račun."
           footer={
             <div className="flex flex-col items-start justify-between sm:flex-row sm:items-center">
-              <p className="pb-4 sm:pb-0">
-                We will email you to verify the change.
-              </p>
+              <p className="pb-4 sm:pb-0">Poslali ti bomo mail za potrditev.</p>
               <Button
                 variant="slim"
                 type="submit"
                 form="emailForm"
                 disabled={true}
               >
-                Update Email
+                Posodobi Mail
               </Button>
             </div>
           }
