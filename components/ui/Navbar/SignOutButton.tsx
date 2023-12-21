@@ -13,7 +13,7 @@ export default function SignOutButton() {
   };
   return (
     <button className={s.link} onClick={handleSignOut}>
-      Sign out
+      Odjavi
     </button>
   );
 }

@@ -1,28 +1,32 @@
 'use client';
 
-import { createClient, PostgrestResponse } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import supabase from 'utils/supabaseClient';
 
+// Define the Question interface
 interface Question {
   question_text: string;
   answer: string;
+  subject: string;
 }
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-const QuizPage: React.FC = () => {
+// Define the SubjectPage component
+const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
+  // Fetch questions on component mount
   useEffect(() => {
     fetchQuestions();
   }, []);
 
+  // Fetch questions from Supabase
   async function fetchQuestions() {
     try {
-      const response = await supabase.from('questions').select();
+      const response = await supabase
+        .from('questions')
+        .select()
+        .eq('subject', params.subject);
+
       console.log('Supabase Response:', response);
 
       const { data, error } = response;
@@ -39,12 +43,15 @@ const QuizPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
-        Vprašanja
-      </h1>
-      <ul className="sm:text-center">
+      <h1 className="text-5xl text-red-500 mt-10 ml-10 font-bold">{`Kviz: ${
+        questions.length > 0 ? questions[0].subject : params.subject
+      }`}</h1>
+      <ul className="">
         {questions.map((question, index) => (
-          <li key={index} className="m-10 border-2 border-white">
+          <li
+            key={index}
+            className="m-10 border-2 border-neutral-500 rounded-lg p-10 border-neutral-500"
+          >
             <strong>Vprašanje: </strong> {question.question_text}
             <br></br>
             <strong>Odgovor:</strong> {question.answer}
@@ -55,4 +62,4 @@ const QuizPage: React.FC = () => {
   );
 };
 
-export default QuizPage;
+export default SubjectPage;

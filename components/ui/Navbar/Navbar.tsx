@@ -13,7 +13,7 @@ export default async function Navbar() {
   return (
     <nav className={s.root}>
       <a href="#skip" className="sr-only focus:not-sr-only">
-        Skip to content
+        Preskoči
       </a>
       <div className="max-w-6xl px-6 mx-auto">
         <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
@@ -21,10 +21,15 @@ export default async function Navbar() {
             <Link href="/" className={s.logo} aria-label="Logo">
               NarediMaturo
             </Link>
+            <nav className="ml-6 space-x-2 lg:block text-2xl">
+              <Link href="/" className={s.link}>
+                Domov
+              </Link>
+            </nav>
             <nav className="hidden ml-6 space-x-2 lg:block text-2xl">
               {user && (
                 <Link href="/account" className={s.link}>
-                  Account
+                  Račun
                 </Link>
               )}
             </nav>
@@ -34,7 +39,7 @@ export default async function Navbar() {
               <SignOutButton />
             ) : (
               <Link href="/signin" className={s.link}>
-                Sign in
+                Prijava
               </Link>
             )}
           </div>
