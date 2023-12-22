@@ -17,7 +17,6 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-// Define the QuizPage component
 const QuizPage: React.FC = () => {
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -55,12 +54,8 @@ const QuizPage: React.FC = () => {
       </h1>
       <div className="flex flex-wrap justify-center mt-4">
         {distinctSubjects.map((subject, index) => (
-          <Button className="m-10">
-            <Link
-              key={index}
-              href={`quiz/${subject}`}
-              className=" border-neutral-500 rounded-xl m-10"
-            >
+          <Button className="mr-5 mt-5 border rounded-xl">
+            <Link key={index} href={`quiz/${subject}`} className=" m-0">
               {subject}
             </Link>
           </Button>

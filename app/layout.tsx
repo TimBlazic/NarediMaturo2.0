@@ -42,7 +42,7 @@ export const metadata = {
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en">
-      <body className="bg-zinc-900 loading">
+      <body className="loading">
         <SupabaseProvider>
           <Navbar />
           <main
@@ -51,7 +51,6 @@ export default function RootLayout({ children }: PropsWithChildren) {
           >
             {children}
           </main>
-          <Footer />
         </SupabaseProvider>
       </body>
     </html>

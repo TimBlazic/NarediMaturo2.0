@@ -21,7 +21,7 @@ export default async function Navbar() {
             <Link href="/" className={s.logo} aria-label="Logo">
               NarediMaturo
             </Link>
-            <nav className="ml-6 space-x-2 lg:block text-2xl">
+            <nav className="hidden ml-6 space-x-2 lg:block text-2xl">
               <Link href="/" className={s.link}>
                 Domov
               </Link>

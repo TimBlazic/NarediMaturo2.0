@@ -3,23 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import supabase from 'utils/supabaseClient';
 
-// Define the Question interface
 interface Question {
   question_text: string;
   answer: string;
   subject: string;
 }
 
-// Define the SubjectPage component
 const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
   const [questions, setQuestions] = useState<Question[]>([]);
 
-  // Fetch questions on component mount
   useEffect(() => {
     fetchQuestions();
   }, []);
 
-  // Fetch questions from Supabase
   async function fetchQuestions() {
     try {
       const response = await supabase
