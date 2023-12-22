@@ -35,7 +35,7 @@ export default async function Dashboard() {
 
   return (
     <div className="flex h-screen">
-      <div className="bg-white w-1/3 m-5 h-1/2 py-8 flex flex-col items-center justify-center border border-white rounded-xl">
+      <div className="bg-white shadow-xl w-1/3 m-5 h-1/2 py-8 flex flex-col items-center justify-center border border-white rounded-xl">
         <div className="mb-6">
           <img
             className="w-32 h-32 object-cover rounded-full"
@@ -48,12 +48,12 @@ export default async function Dashboard() {
 
         <Link
           href="/account"
-          className="text-gray-500 mt-2 hover:text-gray-700 border rounded-xl py-2 px-10 focus:outline-none focus:text-gray-700"
+          className="text-gray-500 mt-2 hover:text-gray-700 border shadow-lg rounded-xl py-2 px-10 focus:outline-none focus:text-gray-700"
         >
           Profil
         </Link>
       </div>
-      <div className="bg-white w-1/4 m-5 h-1/4 py-8 flex flex-col items-center justify-center border border-white rounded-xl">
+      <div className="bg-white shadow-xl w-1/4 m-5 h-1/4 py-8 flex flex-col items-center justify-center border border-white rounded-xl">
         <Link
           href="/pages/selection"
           passHref
