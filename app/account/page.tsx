@@ -52,7 +52,7 @@ export default async function Account() {
     <section className="mb-32">
       <div className="max-w-6xl px-4 py-8 mx-auto sm:px-6 sm:pt-24 lg:px-8">
         <div className="sm:align-center sm:flex sm:flex-col">
-          <h1 className="text-4xl font-extrabold text-white sm:text-center sm:text-6xl">
+          <h1 className="text-4xl font-extrabold sm:text-center sm:text-6xl">
             Profil
           </h1>
         </div>
@@ -80,7 +80,7 @@ export default async function Account() {
               <input
                 type="text"
                 name="name"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                className="w-1/2 p-3 rounded-md"
                 defaultValue={userDetails?.full_name ?? ''}
                 placeholder="Tvoje ime"
                 maxLength={64}
@@ -110,7 +110,7 @@ export default async function Account() {
               <input
                 type="text"
                 name="email"
-                className="w-1/2 p-3 rounded-md bg-zinc-800"
+                className="w-1/2 p-3 rounded-md"
                 defaultValue={user ? user.email : ''}
                 placeholder="Your email"
                 maxLength={64}
@@ -135,12 +135,10 @@ function Card({ title, description, footer, children }: Props) {
     <div className="w-full max-w-3xl m-auto my-8 border rounded-md p border-zinc-700">
       <div className="px-5 py-4">
         <h3 className="mb-1 text-2xl font-medium">{title}</h3>
-        <p className="text-zinc-300">{description}</p>
+        <p className="">{description}</p>
         {children}
       </div>
-      <div className="p-4 border-t rounded-b-md border-zinc-700 bg-zinc-900 text-zinc-500">
-        {footer}
-      </div>
+      <div className="p-4 border-t rounded-b-md border-zinc-700">{footer}</div>
     </div>
   );
 }

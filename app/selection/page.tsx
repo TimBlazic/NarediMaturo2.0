@@ -49,7 +49,7 @@ const QuizPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-4xl mt-10 font-extrabold text-white sm:text-center sm:text-4xl">
+      <h1 className="text-4xl mt-10 font-extrabold sm:text-center sm:text-4xl">
         Izberi predmet:
       </h1>
       <div className="flex flex-wrap justify-center mt-4">

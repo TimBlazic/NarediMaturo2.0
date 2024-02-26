@@ -17,6 +17,7 @@ html {
   box-sizing: border-box;
   touch-action: manipulation;
   font-feature-settings: 'case' 1, 'rlig' 1, 'calt' 0;
+  
 }
 
 html,
