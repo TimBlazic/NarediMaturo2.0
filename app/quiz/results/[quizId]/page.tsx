@@ -2,7 +2,7 @@
 
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import supabase from 'utils/supabaseClient';
 
 const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
@@ -10,6 +10,8 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
   const [score, setScore] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -39,10 +41,9 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
               throw new Error('Error fetching question details');
             }
 
-            // Fetch the answer for the current question from the 'quizzes' table
             const { data: quizData, error: quizError } = await supabase
               .from('quizzes')
-              .select('answer, score') // Also fetch the score
+              .select('answer, score, time')
               .eq('quiz_id', params.quizId)
               .single();
 
@@ -50,23 +51,25 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
               throw new Error('Error fetching quiz data');
             }
 
-            // Update the score
             setScore(quizData.score);
-
-            const userAnswerIndex = question.order_in_quiz - 1; // Adjust for zero-based indexing
-            const userAnswer = quizData.answer[userAnswerIndex];
+            setTimeElapsed(quizData.time);
 
             return {
               ...questionData,
               order_in_quiz: question.order_in_quiz,
-              // Store the answer from the quiz in each question
-              answer: userAnswer
+              answer: quizData.answer[question.order_in_quiz - 1]
             };
           })
         );
 
         setQuestionsData(questionsDetails);
         setLoading(false);
+
+        const totalPoints = questionsDetails.reduce(
+          (total, question) => total + question.points,
+          0
+        );
+        setTotalPoints(totalPoints);
       } catch (error) {
         console.error('Error fetching questions:', error.message);
         setError('Error fetching questions');
@@ -77,9 +80,12 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
     fetchQuestions();
   }, [params.quizId]);
 
-  useEffect(() => {
-    console.log('Questions Data:', questionsData);
-  }, [questionsData]);
+  // Funkcija za pretvorbo sekund v format mm:ss
+  const formatTime = (timeInSeconds: number) => {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = timeInSeconds % 60;
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
 
   if (loading) {
     return <div className="container mx-auto">Loading...</div>;
@@ -92,14 +98,21 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold mb-4">Rezultati</h1>
-      <p className="text-lg font-medium">Točke: {score}</p>{' '}
+      <div className="inline-flex text-xl font-bold mb-10">
+        <div className="bg-white rounded-lg shadow-md p-8 mr-10">
+          Točke: {score} / {totalPoints}
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-8">
+          Čas: {formatTime(timeElapsed)}
+        </div>
+      </div>
+
       <ul className="space-y-8">
         {questionsData.map((question, index) => (
           <li key={index} className="bg-white rounded-lg shadow-md p-8">
             <p className="text-xl font-semibold">
               {index + 1}. {question.question_text}
             </p>
-            <p className="text-lg font-medium">Točke: {question.points}</p>
             {question.picture && (
               <div className="mt-4">
                 <img

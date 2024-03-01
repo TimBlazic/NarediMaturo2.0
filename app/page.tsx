@@ -34,8 +34,8 @@ export default async function Dashboard() {
   const fullName = userDetails?.full_name && userDetails.full_name;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen">
-      <div className="bg-white shadow-lg lg:w-1/3 lg:m-auto m-5 p-8 rounded-xl flex flex-col items-center justify-center border border-gray-200">
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 justify-center">
+      <div className="bg-white shadow-lg p-8 rounded-xl flex flex-col items-center justify-center border border-gray-200 lg:col-span-1">
         <div className="mb-6">
           <img
             className="w-32 h-32 object-cover rounded-full"
@@ -51,13 +51,22 @@ export default async function Dashboard() {
           Profil
         </Link>
       </div>
-      <div className="bg-white shadow-lg lg:w-1/3 lg:m-auto m-5 p-8 rounded-xl flex flex-col items-center justify-center border border-gray-200">
+      <div className="bg-white shadow-lg p-8 rounded-xl flex flex-col items-center justify-center border border-gray-200">
         <Link
           href="/selection"
           passHref
           className="bg-white text-black h-20 w-20 py-5 text-center text-2xl m-5 font-bold uppercase rounded-lg focus:outline-none focus:text-gray-700"
         >
           Kviz
+        </Link>
+      </div>
+      <div className="bg-white shadow-lg p-8 rounded-xl flex flex-col items-center justify-center border border-gray-200">
+        <Link
+          href="/history"
+          passHref
+          className="bg-white text-black h-20 w-20 py-5 text-center text-2xl m-5 font-bold uppercase rounded-lg focus:outline-none focus:text-gray-700"
+        >
+          Zgodovina
         </Link>
       </div>
     </div>

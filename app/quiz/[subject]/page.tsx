@@ -1,41 +1,35 @@
 'use client';
 
-// Import the necessary modules/components
 import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import supabase from 'utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
-// Define the Question interface
-interface Question {
-  question_id: number;
-  question_text: string;
-  points: number;
-  options: string[];
-  correct_answer: string;
-  picture?: string;
-}
-
-// Define the SubjectPage component
 const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
-  // State variables to store questions, selected options, quiz ID, and quiz score
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<any[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [quizId, setQuizId] = useState<string | null>(null);
   const [quizScore, setQuizScore] = useState<number>(0);
+  const [timeElapsed, setTimeElapsed] = useState<number>(0); // Track time elapsed in seconds
 
-  // Fetch questions when the component mounts
   useEffect(() => {
     fetchQuestions();
   }, []);
 
-  // Function to fetch questions from the database
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeElapsed((prevTime) => prevTime + 1); // Increment time elapsed every second
+    }, 1000);
+
+    // Clean up timer on component unmount
+    return () => clearInterval(timer);
+  }, []);
+
   const fetchQuestions = async () => {
     try {
       const quiz_id = generateUUID(); // Generate a unique quiz ID
 
-      // Fetch questions from the 'questions' table based on the subject
       const response = await supabase
         .from('questions')
         .select(
@@ -43,7 +37,6 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
         )
         .eq('subject', params.subject);
 
-      // Extract the data and handle any errors
       const { data: questionsData, error: questionsError } = response;
       if (questionsError) {
         console.error('Error fetching questions:', questionsError.message);
@@ -51,7 +44,7 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
       }
 
       const shuffledQuestions = questionsData
-        ? shuffleArray(questionsData).slice(0, 20) // Uporabite slice(0, 20) za omejitev na prvih 20 elementov
+        ? shuffleArray(questionsData).slice(0, 20) // Limit to the first 20 elements
         : [];
       setQuestions(shuffledQuestions);
 
@@ -61,14 +54,12 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
     }
   };
 
-  // Function to handle radio button option change
   const handleOptionChange = (index: number, option: string) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[index] = option;
     setSelectedOptions(newSelectedOptions);
   };
 
-  // Function to send quiz data to the database
   const sendData = async () => {
     try {
       if (!quizId) {
@@ -82,25 +73,23 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
       const answers: (string | null)[] = [];
 
       questions.forEach((question, index) => {
-        // Preveri, ali je bil podan odgovor na vprašanje
         const answer = selectedOptions[index] || null;
         answers.push(answer);
 
-        // Povečaj rezultat, če je odgovor pravilen
         if (answer === question.correct_answer) {
           score += question.points;
         }
       });
 
-      // Pošlji podatke v bazo s pravilno vrednostjo rezultata
       const { error: quizError } = await supabase.from('quizzes').insert([
         {
           quiz_id: quizId,
           user_id: user_id,
           date_created: new Date(),
           allScore: questions.reduce((total, q) => total + q.points, 0),
-          score: score, // Uporabite pravilno izračunano vrednost rezultata
-          answer: answers
+          score: score,
+          answer: answers,
+          time: timeElapsed // Store time elapsed in seconds
         }
       ]);
 
@@ -109,37 +98,36 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
         return;
       }
 
-      // Insert questions into the 'quiz_questions' table with the same quiz ID
-      const questionInserts = questions.map((question, index) => ({
+      // Insert entries into the 'quiz_questions' table
+      const quizQuestionsInserts = questions.map((question, index) => ({
         quiz_id: quizId,
         question_id: question.question_id,
         order_in_quiz: index + 1
       }));
 
-      const { error: questionError } = await supabase
+      const { error: quizQuestionsError } = await supabase
         .from('quiz_questions')
-        .insert(questionInserts);
+        .insert(quizQuestionsInserts);
 
-      if (questionError) {
-        console.error('Error inserting quiz questions:', questionError.message);
+      if (quizQuestionsError) {
+        console.error(
+          'Error inserting quiz questions:',
+          quizQuestionsError.message
+        );
         return;
       }
 
-      console.log('Quiz data inserted successfully');
-
-      // Redirect to the results page with quiz_id as query parameter
+      console.log('Quiz data and quiz questions inserted successfully');
     } catch (error) {
       console.error('Error inserting quiz:', error.message);
     }
   };
 
-  // Function to generate a UUID
   const generateUUID = () => {
     return uuidv4();
   };
 
-  // Function to shuffle an array
-  const shuffleArray = (array: Question[]) => {
+  const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [array[i], array[j]] = [array[j], array[i]];
@@ -147,9 +135,13 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
     return array;
   };
 
-  // Render the component
   return (
     <div className="container mx-auto">
+      <div className="text-2xl text-center my-4">
+        {Math.floor(timeElapsed / 60)}:
+        {(timeElapsed % 60).toString().padStart(2, '0')}
+      </div>
+
       <ul className="space-y-8">
         {questions.map((question, index) => (
           <li key={index} className="bg-white rounded-lg shadow-md p-8">
@@ -202,5 +194,4 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
   );
 };
 
-// Export the component
 export default SubjectPage;
