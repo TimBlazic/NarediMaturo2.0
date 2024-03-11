@@ -1,8 +1,8 @@
-import SupabaseProvider from './supabase-provider';
 import Footer from '@/components/ui/Footer';
 import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
 import 'styles/main.css';
+import SupabaseProvider from './supabase-provider';
 
 const meta = {
   title: 'NarediMaturo',
@@ -29,13 +29,6 @@ export const metadata = {
     cardImage: meta.cardImage,
     type: meta.type,
     site_name: meta.title
-  },
-  twitter: {
-    card: 'summary_large_image',
-    site: '@vercel',
-    title: meta.title,
-    description: meta.description,
-    cardImage: meta.cardImage
   }
 };
 

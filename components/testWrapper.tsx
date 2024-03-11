@@ -1,17 +1,22 @@
 'use client';
 
-import Button from '@/components/ui/Button';
+import supabase from '@/utils/supabaseClient';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import supabase from 'utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
 
-const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
+const Wrapper = (props: any) => {
   const [questions, setQuestions] = useState<any[]>([]);
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
-  const [quizId, setQuizId] = useState<string | null>(null);
-  const [quizScore, setQuizScore] = useState<number>(0);
-  const [timeElapsed, setTimeElapsed] = useState<number>(0); // Track time elapsed in seconds
+  const [testId, setTestId] = useState<string | null>(null);
+  const [timeElapsed, setTimeElapsed] = useState<number>(0);
+
+  const originalString = props.subject;
+  const subject = decodeURIComponent(originalString);
+
+  const generateUUID = () => {
+    return uuidv4();
+  };
 
   useEffect(() => {
     fetchQuestions();
@@ -19,23 +24,20 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setTimeElapsed((prevTime) => prevTime + 1); // Increment time elapsed every second
+      setTimeElapsed((prevTime) => prevTime + 1);
     }, 1000);
 
-    // Clean up timer on component unmount
     return () => clearInterval(timer);
   }, []);
 
   const fetchQuestions = async () => {
     try {
-      const quiz_id = generateUUID(); // Generate a unique quiz ID
-
       const response = await supabase
         .from('questions')
         .select(
           'question_id, question_text, points, options, correct_answer, picture'
         )
-        .eq('subject', params.subject);
+        .eq('subject', subject);
 
       const { data: questionsData, error: questionsError } = response;
       if (questionsError) {
@@ -48,7 +50,9 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
         : [];
       setQuestions(shuffledQuestions);
 
-      setQuizId(quiz_id);
+      const test_id = generateUUID();
+      console.log('Generated UUID for this test', test_id);
+      setTestId(test_id);
     } catch (error) {
       console.error('Error when fetching questions:', error.message);
     }
@@ -62,12 +66,10 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
 
   const sendData = async () => {
     try {
-      if (!quizId) {
-        console.error('No quiz ID found.');
+      if (!testId) {
+        console.error('No test ID found.');
         return;
       }
-
-      const user_id = 'c6df99e6-955d-44a7-a671-b0900d79568d';
 
       let score = 0;
       const answers: (string | null)[] = [];
@@ -80,33 +82,42 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
           score += question.points;
         }
       });
+      const today = new Date();
+      const startOfToday = new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      );
 
-      const { error: quizError } = await supabase.from('quizzes').insert([
+      // Insert entries into the 'tests' table
+      const { error: testError } = await supabase.from('tests').insert([
         {
-          quiz_id: quizId,
-          user_id: user_id,
-          date_created: new Date(),
-          allScore: questions.reduce((total, q) => total + q.points, 0),
+          test_id: testId,
+          user_id: props.user,
+          all_score: questions.reduce((total, q) => total + q.points, 0),
           score: score,
+          time: timeElapsed,
           answer: answers,
-          time: timeElapsed // Store time elapsed in seconds
+          subject: subject,
+          date_created: new Date(),
+          date: startOfToday
         }
       ]);
 
-      if (quizError) {
-        console.error('Error inserting quiz:', quizError.message);
+      if (testError) {
+        console.error('Error inserting test:', testError.message);
         return;
       }
 
       // Insert entries into the 'quiz_questions' table
       const quizQuestionsInserts = questions.map((question, index) => ({
-        quiz_id: quizId,
+        test_id: testId,
         question_id: question.question_id,
-        order_in_quiz: index + 1
+        order_in_test: index + 1
       }));
 
       const { error: quizQuestionsError } = await supabase
-        .from('quiz_questions')
+        .from('test_questions')
         .insert(quizQuestionsInserts);
 
       if (quizQuestionsError) {
@@ -117,14 +128,10 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
         return;
       }
 
-      console.log('Quiz data and quiz questions inserted successfully');
+      console.log('Test data and test questions inserted successfully');
     } catch (error) {
-      console.error('Error inserting quiz:', error.message);
+      console.error('Error inserting test:', error.message);
     }
-  };
-
-  const generateUUID = () => {
-    return uuidv4();
   };
 
   const shuffleArray = (array: any[]) => {
@@ -180,18 +187,18 @@ const SubjectPage: React.FC<{ params: { subject: string } }> = ({ params }) => {
         ))}
       </ul>
       <div className="relative top-4 bottom-0 mb-16">
-        <Button className="shadow-md">
-          <Link
-            href={`../quiz/results/${quizId}`}
-            className="bg-primary font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 hover:bg-primary-dark"
-            onClick={sendData}
-          >
-            Oddaj
-          </Link>
-        </Button>
+        <Link
+          href={`../test/results/${testId}`}
+          className={`bg-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 ${
+            testId ? 'hover:bg-primary-dark' : 'cursor-not-allowed'
+          }`}
+          onClick={sendData}
+        >
+          Oddaj
+        </Link>
       </div>
     </div>
   );
 };
 
-export default SubjectPage;
+export default Wrapper;

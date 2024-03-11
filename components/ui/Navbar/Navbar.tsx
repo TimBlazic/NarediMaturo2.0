@@ -1,47 +1,35 @@
 import s from './Navbar.module.css';
 import SignOutButton from './SignOutButton';
-import { createServerSupabaseClient } from '@/app/supabase-server';
+import { createServerSupabaseClient, getSession } from '@/app/supabase-server';
+import supabase from '@/utils/supabaseClient';
 import { Session } from 'inspector';
 import Link from 'next/link';
 
 export default async function Navbar() {
-  const supabase = createServerSupabaseClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const session = await getSession();
+  const userId = session?.user.id;
+
+  console.log(userId);
 
   return (
     <nav className={s.root}>
-      <a href="#skip" className="sr-only focus:not-sr-only">
-        Preskoči
-      </a>
       <div className="max-w-6xl px-6 mx-auto">
         <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
           <div className="flex text-3xl font-bold items-center flex-1">
-            <Link href="/" className={s.logo} aria-label="Logo">
-              NarediMaturo
-            </Link>
-            <nav className="hidden ml-6 space-x-2 lg:block text-2xl">
-              <Link href="/" className={s.link}>
-                Domov
+            {userId ? (
+              <Link href="/dashboard" className={s.logo} aria-label="Logo">
+                Naredi
+                <span className="text-blue-500 dark:text-blue-500">Maturo</span>
               </Link>
-            </nav>
-            <nav className="hidden ml-6 space-x-2 lg:block text-2xl">
-              {user && (
-                <Link href="/account" className={s.link}>
-                  Račun
-                </Link>
-              )}
-            </nav>
-          </div>
-          <div className="flex justify-end flex-1 space-x-8">
-            {user ? (
-              <SignOutButton />
             ) : (
-              <Link href="/signin" className={s.link}>
-                Prijava
+              <Link href="/" className={s.logo} aria-label="Logo">
+                Naredi
+                <span className="text-blue-500 dark:text-blue-500">Maturo</span>
               </Link>
             )}
+          </div>
+          <div className="flex justify-end flex-1 space-x-8">
+            {userId ? <SignOutButton userId={userId} /> : null}
           </div>
         </div>
       </div>

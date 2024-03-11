@@ -1,11 +1,10 @@
 'use client';
 
-import Button from '@/components/ui/Button';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import supabase from 'utils/supabaseClient';
 
-const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
+const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
   const [questionsData, setQuestionsData] = useState<any[]>([]);
   const [score, setScore] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
@@ -14,15 +13,16 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
   const [timeElapsed, setTimeElapsed] = useState<number>(0);
 
   useEffect(() => {
+    console.log(params.testId);
     const fetchQuestions = async () => {
       try {
         const { data: fetchedQuestions, error: questionsError } = await supabase
-          .from('quiz_questions')
-          .select('question_id, order_in_quiz')
-          .eq('quiz_id', params.quizId);
+          .from('test_questions')
+          .select('question_id, order_in_test')
+          .eq('test_id', params.testId);
 
         if (questionsError) {
-          setError('Error fetching questions');
+          setError('Error fetching questions1');
           setLoading(false);
           return;
         }
@@ -38,26 +38,26 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
               .single();
 
             if (questionError) {
-              throw new Error('Error fetching question details');
+              throw new Error('Error fetching question details2');
             }
 
-            const { data: quizData, error: quizError } = await supabase
-              .from('quizzes')
+            const { data: testData, error: testError } = await supabase
+              .from('tests')
               .select('answer, score, time')
-              .eq('quiz_id', params.quizId)
+              .eq('test_id', params.testId)
               .single();
 
-            if (quizError) {
-              throw new Error('Error fetching quiz data');
+            if (testError) {
+              throw new Error('Error fetching test data3');
             }
 
-            setScore(quizData.score);
-            setTimeElapsed(quizData.time);
+            setScore(testData.score);
+            setTimeElapsed(testData.time);
 
             return {
               ...questionData,
-              order_in_quiz: question.order_in_quiz,
-              answer: quizData.answer[question.order_in_quiz - 1]
+              order_in_test: question.order_in_test,
+              answer: testData.answer[question.order_in_test - 1]
             };
           })
         );
@@ -72,13 +72,13 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
         setTotalPoints(totalPoints);
       } catch (error) {
         console.error('Error fetching questions:', error.message);
-        setError('Error fetching questions');
+        setError('Error fetching questions3');
         setLoading(false);
       }
     };
 
     fetchQuestions();
-  }, [params.quizId]);
+  }, [params.testId]);
 
   // Funkcija za pretvorbo sekund v format mm:ss
   const formatTime = (timeInSeconds: number) => {
@@ -152,14 +152,12 @@ const ResultsPage: React.FC<{ params: { quizId: string } }> = ({ params }) => {
         ))}
       </ul>
       <div className="flex justify-center mt-8">
-        <Button>
-          <Link
-            href={`/`}
-            className="bg-primary font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 hover:bg-primary-dark"
-          >
-            Domov
-          </Link>
-        </Button>
+        <Link
+          href={`/dashboard`}
+          className="bg-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 hover:bg-primary-dark"
+        >
+          Domov
+        </Link>
       </div>
     </div>
   );

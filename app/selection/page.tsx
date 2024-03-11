@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@/components/ui/Button';
 import { createClient } from '@supabase/supabase-js';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -17,7 +16,7 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-const QuizPage: React.FC = () => {
+const TestPage: React.FC = () => {
   const router = useRouter();
   const [questions, setQuestions] = useState<Question[]>([]);
   const [distinctSubjects, setDistinctSubjects] = useState<string[]>([]);
@@ -49,20 +48,23 @@ const QuizPage: React.FC = () => {
 
   return (
     <div>
-      <h1 className="text-4xl mt-10 font-extrabold sm:text-center sm:text-4xl">
-        Izberi predmet:
+      <h1 className="text-4xl mt-10 font-extrabold text-center sm:text-4xl">
+        Izberi{' '}
+        <span className="text-blue-500 dark:text-blue-500">predmet:</span>
       </h1>
-      <div className="flex flex-wrap justify-center mt-4">
+      <div className="flex flex-wrap justify-center mt-4 max-w-6xl text-center m-auto">
         {distinctSubjects.map((subject, index) => (
-          <Button className="mr-5 mt-5 border rounded-xl">
-            <Link key={index} href={`quiz/${subject}`} className=" m-0">
-              {subject}
-            </Link>
-          </Button>
+          <Link
+            key={index}
+            href={`test/${subject}`}
+            className="mr-5 bg-white text-xl py-2 px-5 mt-5 rounded-xl shadow-lg hover:bg-blue-500"
+          >
+            {subject}
+          </Link>
         ))}
       </div>
     </div>
   );
 };
 
-export default QuizPage;
+export default TestPage;
