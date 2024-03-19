@@ -6,9 +6,10 @@ import { useEffect, useState, useRef } from 'react';
 
 export default function SignOutButton({ userId }: { userId: string }) {
   const { supabase } = useSupabase();
-  const [showDropdown, setShowDropdown] = useState(false); // State to manage dropdown visibility
-  const [userName, setUserName] = useState<string | null>(null); // State to store user's name
-  const dropdownRef = useRef<HTMLDivElement>(null); // Ref to dropdown menu
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [userName, setUserName] = useState<string | null>(null);
 
   // Function to fetch user's name
   useEffect(() => {
@@ -24,9 +25,15 @@ export default function SignOutButton({ userId }: { userId: string }) {
           throw error;
         }
 
-        setUserName(data?.full_name || null);
+        if (data && 'full_name' in data) {
+          setUserName(
+            (data as { full_name: string } | null)?.full_name || null
+          );
+        } else {
+          setUserName(null);
+        }
       } catch (error) {
-        console.error('Error fetching user name:', error.message);
+        console.error('Error fetching user name:', error);
       }
     }
 
@@ -63,16 +70,32 @@ export default function SignOutButton({ userId }: { userId: string }) {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      {/* Profile picture button */}
       <button
         className={`${s.link} font-bold py-2 px-4 rounded-md shadow-inner-lg`}
         onClick={handleDropdownToggle} // Toggle dropdown on button click
       >
-        <img src="user.png" alt="Profile" className="w-10 h-10 rounded-full" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          fill="black"
+          className="bi bi-person-circle"
+          viewBox="0 0 16 16"
+        >
+          <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+          <path
+            fillRule="evenodd"
+            d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"
+          />
+        </svg>
       </button>
 
       {showDropdown && (
-        <div className="absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow">
+        <div
+          className="absolute right-0 mt-2 w-44 bg-white divide-y divide-gray-100 rounded-lg shadow"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
           <div className="py-2">
             <p className="block px-4 py-2 text-sm text-gray-70 hover:cursor-pointer">
               Prijavljen kot: <br></br>
@@ -85,17 +108,11 @@ export default function SignOutButton({ userId }: { userId: string }) {
             >
               Račun
             </a>
-            <a
-              href="/support"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              Pomoč
-            </a>
             <hr></hr>
             <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               onClick={handleSignOut}
+              href=""
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
             >
               Odjavi se
             </a>

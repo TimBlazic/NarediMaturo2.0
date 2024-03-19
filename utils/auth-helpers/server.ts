@@ -150,8 +150,8 @@ export async function signInWithPassword(formData: FormData) {
       error.message
     );
   } else if (data.user) {
-    cookieStore.set('preferredSignInView', 'password_signin', { path: '/' });
-    redirectPath = getStatusRedirect('/', 'Success!', 'You are now signed in.');
+    cookieStore.set('preferredSignInView', 'password_signin', { path: '/dashboard' });
+    redirectPath = getStatusRedirect('/dashboard', '', '');
   } else {
     redirectPath = getErrorRedirect(
       '/signin/password_signin',
@@ -194,7 +194,7 @@ export async function signUp(formData: FormData) {
       error.message
     );
   } else if (data.session) {
-    redirectPath = getStatusRedirect('/', 'Success!', 'You are now signed in.');
+    redirectPath = getStatusRedirect('/account', '', '');
   } else if (
     data.user &&
     data.user.identities &&
@@ -207,9 +207,9 @@ export async function signUp(formData: FormData) {
     );
   } else if (data.user) {
     redirectPath = getStatusRedirect(
-      '/',
-      'Success!',
-      'Please check your email for a confirmation link. You may now close this tab.'
+      '/dashboard',
+      '',
+      ''
     );
   } else {
     redirectPath = getErrorRedirect(

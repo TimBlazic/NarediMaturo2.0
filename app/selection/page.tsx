@@ -57,7 +57,7 @@ const TestPage: React.FC = () => {
           <Link
             key={index}
             href={`test/${subject}`}
-            className="mr-5 bg-white text-xl py-2 px-5 mt-5 rounded-xl shadow-lg hover:bg-blue-500"
+            className="mr-5 bg-white text-xl border border-gray-300 py-2 px-5 mt-5 rounded-xl shadow-md hover:bg-black hover:text-white duration-300"
           >
             {subject}
           </Link>

@@ -83,8 +83,11 @@ const getToastRedirect = (
 ): string => {
   const [nameKey, descriptionKey] = toastKeyMap[toastType];
 
-  let redirectPath = `/dashboard`;
+  let redirectPath = `${path}?${nameKey}=${encodeURIComponent(toastName)}`;
 
+  if (toastDescription) {
+    redirectPath += `&${descriptionKey}=${encodeURIComponent(toastDescription)}`;
+  }
 
   if (disableButton) {
     redirectPath += `&disable_button=true`;

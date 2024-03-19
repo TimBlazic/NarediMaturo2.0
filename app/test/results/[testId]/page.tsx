@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 import supabase from 'utils/supabaseClient';
 
 const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
@@ -71,7 +72,7 @@ const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
         );
         setTotalPoints(totalPoints);
       } catch (error) {
-        console.error('Error fetching questions:', error.message);
+        console.error('Error fetching questions:', error);
         setError('Error fetching questions3');
         setLoading(false);
       }
@@ -79,6 +80,12 @@ const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
 
     fetchQuestions();
   }, [params.testId]);
+
+  const componentRef = useRef<any>();
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current
+  });
 
   // Funkcija za pretvorbo sekund v format mm:ss
   const formatTime = (timeInSeconds: number) => {
@@ -97,66 +104,87 @@ const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-3xl font-bold mb-4">Rezultati</h1>
-      <div className="inline-flex text-xl font-bold mb-10">
-        <div className="bg-white rounded-lg shadow-md p-8 mr-10">
-          Točke: {score} / {totalPoints}
+      <div ref={componentRef} className="no-page-break">
+        <h1 className="text-3xl font-bold mb-4">Rezultati</h1>
+        <div className="inline-flex text-xl font-bold mb-10">
+          <div className="bg-white rounded-lg shadow-md py-3 px-6 mr-5 border border-gray-300">
+            Točke: {score} / {totalPoints}
+          </div>
+          <div className="bg-white rounded-lg shadow-md py-3 px-6 mr-5 border border-gray-300">
+            Čas: {formatTime(timeElapsed)}
+          </div>
+          <button
+            onClick={handlePrint}
+            className="bg-white rounded-lg shadow-md py-3 px-6 mr-5 border border-gray-300 hover:bg-black hover:text-white"
+          >
+            Shrani
+          </button>
         </div>
-        <div className="bg-white rounded-lg shadow-md p-8">
-          Čas: {formatTime(timeElapsed)}
-        </div>
-      </div>
-
-      <ul className="space-y-8">
-        {questionsData.map((question, index) => (
-          <li key={index} className="bg-white rounded-lg shadow-md p-8">
-            <p className="text-xl font-semibold">
-              {index + 1}. {question.question_text}
-            </p>
-            {question.picture && (
-              <div className="mt-4">
-                <img
-                  className="mt-2"
-                  src={question.picture}
-                  alt={`Question ${index + 1}`}
-                />
-              </div>
-            )}
-            <div className="mt-2">
-              <ul className="ml-6 list-disc">
-                {question.options.map((option: string, optionIndex: number) => {
-                  const isCorrectOption = option === question.correct_answer;
-                  const isSelectedOptionCorrect = option === question.answer;
-
-                  return (
-                    <li
-                      key={optionIndex}
-                      className={`font-bold text-base ${
-                        isSelectedOptionCorrect
-                          ? isCorrectOption
-                            ? 'text-green-500' // Selected and correct
-                            : 'text-red-500' // Selected but incorrect
-                          : '' // Not selected
-                      }`}
-                    >
-                      {option}
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <p className="text-lg font-medium mt-2">
-              Pravilni odgovor: {question.correct_answer}
-            </p>
-          </li>
-        ))}
-      </ul>
-      <div className="flex justify-center mt-8">
         <Link
           href={`/dashboard`}
-          className="bg-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 hover:bg-primary-dark"
+          className="bg-black border border-gray-300 text-white hover:bg-white hover:text-black font-semibold py-3 px-6 justify-end text-xl rounded-lg inline-block transition duration-300"
         >
-          Domov
+          Končaj
+        </Link>
+
+        <ul className="space-y-8">
+          {questionsData.map((question, index) => (
+            <li
+              key={index}
+              className="bg-white rounded-lg border border-gray-300 shadow-md p-8"
+            >
+              <p className="text-xl font-semibold">
+                {index + 1}. {question.question_text}
+              </p>
+              {question.picture && (
+                <div className="mt-4">
+                  <img
+                    className="mt-2"
+                    src={question.picture}
+                    alt={`Question ${index + 1}`}
+                  />
+                </div>
+              )}
+              <div className="mt-2">
+                <ul className="ml-6 list-disc">
+                  {question.options.map(
+                    (option: string, optionIndex: number) => {
+                      const isCorrectOption =
+                        option === question.correct_answer;
+                      const isSelectedOptionCorrect =
+                        option === question.answer;
+
+                      return (
+                        <li
+                          key={optionIndex}
+                          className={`font-bold text-base ${
+                            isSelectedOptionCorrect
+                              ? isCorrectOption
+                                ? 'text-green-500'
+                                : 'text-red-500'
+                              : ''
+                          }`}
+                        >
+                          {option}
+                        </li>
+                      );
+                    }
+                  )}
+                </ul>
+              </div>
+              <p className="text-lg font-medium mt-2">
+                Pravilni odgovor: {question.correct_answer}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="flex justify-center mt-8 mb-12">
+        <Link
+          href={`/dashboard`}
+          className="bg-black border border-gray-300 text-white hover:bg-white hover:text-black font-semibold py-3 px-6 rounded-lg inline-block transition duration-300"
+        >
+          Končaj
         </Link>
       </div>
     </div>

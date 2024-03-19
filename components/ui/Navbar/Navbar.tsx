@@ -12,8 +12,8 @@ export default async function Navbar() {
   console.log(userId);
 
   return (
-    <nav className={s.root}>
-      <div className="max-w-6xl px-6 mx-auto">
+    <nav className="{s.root} bg-white">
+      <div className="max-w-6xl px-6 mx-auto bg-white">
         <div className="relative flex flex-row justify-between py-4 align-center md:py-6">
           <div className="flex text-3xl font-bold items-center flex-1">
             {userId ? (

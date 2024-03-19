@@ -49,7 +49,7 @@ export default async function SignIn({
   } = await supabase.auth.getUser();
 
   if (user && viewProp !== 'update_password') {
-    return redirect('/dashboard'); // Preusmeritev na /dashboard, če je uporabnik že prijavljen
+    return redirect('/');
   } else if (!user && viewProp === 'update_password') {
     return redirect('/signin');
   }
@@ -58,17 +58,20 @@ export default async function SignIn({
     <div className="flex justify-center height-screen-helper">
       <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
         <div className="flex justify-center pb-12 ">
-          <Logo width="64px" height="64px" />
+          <h1 className="text-6xl font-extrabold">
+            Naredi
+            <span className="text-blue-500 dark:text-blue-500">Maturo</span>
+          </h1>
         </div>
         <Card
           title={
             viewProp === 'forgot_password'
-              ? 'Reset Password'
+              ? 'Pozabljeno geslo'
               : viewProp === 'update_password'
-              ? 'Update Password'
+              ? 'Posodobi geslo'
               : viewProp === 'signup'
-              ? 'Sign Up'
-              : 'Sign In'
+              ? 'Registriraj se'
+              : 'Prijavi se'
           }
         >
           {viewProp === 'password_signin' && (
@@ -97,14 +100,6 @@ export default async function SignIn({
           {viewProp === 'signup' && (
             <SignUp allowEmail={allowEmail} redirectMethod={redirectMethod} />
           )}
-          {viewProp !== 'update_password' &&
-            viewProp !== 'signup' &&
-            allowOauth && (
-              <>
-                <Separator text="Third-party sign-in" />
-                <OauthSignIn />
-              </>
-            )}
         </Card>
       </div>
     </div>

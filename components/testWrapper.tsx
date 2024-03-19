@@ -2,7 +2,7 @@
 
 import supabase from '@/utils/supabaseClient';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const Wrapper = (props: any) => {
@@ -54,7 +54,7 @@ const Wrapper = (props: any) => {
       console.log('Generated UUID for this test', test_id);
       setTestId(test_id);
     } catch (error) {
-      console.error('Error when fetching questions:', error.message);
+      console.error('Error when fetching questions:', error);
     }
   };
 
@@ -130,7 +130,7 @@ const Wrapper = (props: any) => {
 
       console.log('Test data and test questions inserted successfully');
     } catch (error) {
-      console.error('Error inserting test:', error.message);
+      console.error('Error inserting test:', error);
     }
   };
 
@@ -151,22 +151,21 @@ const Wrapper = (props: any) => {
 
       <ul className="space-y-8">
         {questions.map((question, index) => (
-          <li key={index} className="bg-white rounded-lg shadow-md p-8">
+          <li
+            key={index}
+            className="bg-white rounded-lg shadow-md p-8 border border-gray-300"
+          >
             <p className="text-xl font-semibold">
               {index + 1}. {question.question_text}
             </p>
             {question.picture && (
               <div className="mt-4">
-                <img
-                  className="w-full"
-                  src={question.picture}
-                  alt={`Question ${index + 1}`}
-                />
+                <img src={question.picture} alt={`Question ${index + 1}`} />
               </div>
             )}
             <div className="mt-4">
               <ul className="text-lg space-y-4">
-                {question.options.map((option, optionIndex) => (
+                {question.options.map((option: string, optionIndex: number) => (
                   <li key={optionIndex}>
                     <label className="flex items-center space-x-2 cursor-pointer">
                       <input
@@ -188,8 +187,8 @@ const Wrapper = (props: any) => {
       </ul>
       <div className="relative top-4 bottom-0 mb-16">
         <Link
-          href={`../test/results/${testId}`}
-          className={`bg-white font-semibold py-3 px-6 rounded-lg inline-block transition duration-300 ${
+          href={testId ? `../test/results/${testId}` : '#'}
+          className={`bg-black text-white hover:bg-white hover:text-black duration-300 font-semibold py-3 px-6 rounded-lg border border-gray-300 inline-block transition duration-300 ${
             testId ? 'hover:bg-primary-dark' : 'cursor-not-allowed'
           }`}
           onClick={sendData}

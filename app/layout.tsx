@@ -3,6 +3,7 @@ import Navbar from '@/components/ui/Navbar';
 import { PropsWithChildren } from 'react';
 import 'styles/main.css';
 import SupabaseProvider from './supabase-provider';
+import { Analytics } from '@vercel/analytics/react';
 
 const meta = {
   title: 'NarediMaturo',
@@ -44,6 +45,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
           >
             {children}
           </main>
+          <Analytics />
         </SupabaseProvider>
       </body>
     </html>

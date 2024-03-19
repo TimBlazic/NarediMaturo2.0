@@ -1,9 +1,9 @@
 'use client';
 
-import Button from '@/components/ui/Button';
-import Link from 'next/link';
-import { signInWithPassword } from '@/utils/auth-helpers/server';
+import Button from '../Button';
 import { handleRequest } from '@/utils/auth-helpers/client';
+import { signInWithPassword } from '@/utils/auth-helpers/server';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 
@@ -44,43 +44,31 @@ export default function PasswordSignIn({
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              className="w-full p-3 rounded-md bg-zinc-800"
+              className="w-full p-3 rounded-md border border-gray-300"
             />
-            <label htmlFor="password">Password</label>
+            <label htmlFor="password">Geslo</label>
             <input
               id="password"
               placeholder="Password"
               type="password"
               name="password"
               autoComplete="current-password"
-              className="w-full p-3 rounded-md bg-zinc-800"
+              className="w-full p-3 rounded-md border border-gray-300"
             />
           </div>
           <Button
             variant="slim"
             type="submit"
-            className="mt-1"
+            className="mt-1 border border-gray-300 bg-black text-white hover:bg-white hover:text-black"
             loading={isSubmitting}
           >
-            Sign in
+            Prijavi se
           </Button>
         </div>
       </form>
       <p>
-        <Link href="/signin/forgot_password" className="font-light text-sm">
-          Forgot your password?
-        </Link>
-      </p>
-      {allowEmail && (
-        <p>
-          <Link href="/signin/email_signin" className="font-light text-sm">
-            Sign in via magic link
-          </Link>
-        </p>
-      )}
-      <p>
         <Link href="/signin/signup" className="font-light text-sm">
-          Don't have an account? Sign up
+          Nimaš računa? <span className="font-bold">Registriraj se.</span>
         </Link>
       </p>
     </div>
