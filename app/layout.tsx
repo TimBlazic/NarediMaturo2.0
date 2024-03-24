@@ -11,7 +11,6 @@ const meta = {
   cardImage: '/og.png',
   robots: 'follow, index',
   favicon: '/favicon.ico',
-  url: 'https://subscription-starter.vercel.app',
   type: 'website'
 };
 
@@ -21,10 +20,8 @@ export const metadata = {
   cardImage: meta.cardImage,
   robots: meta.robots,
   favicon: meta.favicon,
-  url: meta.url,
   type: meta.type,
   openGraph: {
-    url: meta.url,
     title: meta.title,
     description: meta.description,
     cardImage: meta.cardImage,

@@ -139,8 +139,10 @@ const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
               </p>
               {question.picture && (
                 <div className="mt-4">
-                  <img
+                  <Image
                     className="mt-2"
+                    width={400}
+                    height={300}
                     src={question.picture}
                     alt={`Question ${index + 1}`}
                   />
