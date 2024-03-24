@@ -4,6 +4,7 @@ import { PropsWithChildren } from 'react';
 import 'styles/main.css';
 import SupabaseProvider from './supabase-provider';
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const meta = {
   title: 'NarediMaturo',
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: PropsWithChildren) {
             className="min-h-[calc(68dvh-4rem)] md:min-h[calc(68dvh-5rem)]"
           >
             {children}
+            <SpeedInsights />
           </main>
           <Analytics />
         </SupabaseProvider>
