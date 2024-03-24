@@ -56,7 +56,7 @@ export default async function Dashboard() {
     console.error("Error fetching today's testdata:", errorToday);
     return (
       <div className="container mx-auto text-center">
-        Error fetching today's testdata
+        Error fetching today&apos;s testdata
       </div>
     );
   }

@@ -60,4 +60,7 @@ const Button = forwardRef<HTMLButtonElement, Props>((props, buttonRef) => {
   );
 });
 
+// Providing a display name for the component
+Button.displayName = 'Button';
+
 export default Button;

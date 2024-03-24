@@ -4,6 +4,7 @@ import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import supabase from 'utils/supabaseClient';
+import Image from 'next/image';
 
 const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
   const [questionsData, setQuestionsData] = useState<any[]>([]);
