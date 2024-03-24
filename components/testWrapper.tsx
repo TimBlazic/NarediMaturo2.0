@@ -1,10 +1,10 @@
 'use client';
 
 import supabase from '@/utils/supabaseClient';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import Image from 'next/image';
 
 const Wrapper = (props: any) => {
   const [questions, setQuestions] = useState<any[]>([]);
@@ -161,7 +161,7 @@ const Wrapper = (props: any) => {
             </p>
             {question.picture && (
               <div className="mt-4">
-                <Image src={question.picture} alt={`Question ${index + 1}`} />
+                <img src={question.picture} alt={`Question ${index + 1}`} />
               </div>
             )}
             <div className="mt-4">
