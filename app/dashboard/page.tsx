@@ -24,6 +24,7 @@ export default async function Dashboard() {
       </div>
     );
   }
+  console.log(tests);
 
   const testCount = tests[0]?.count || 0;
 
