@@ -1,8 +1,6 @@
 import s from './Navbar.module.css';
 import SignOutButton from './SignOutButton';
-import { createServerSupabaseClient, getSession } from '@/app/supabase-server';
-import supabase from '@/utils/supabaseClient';
-import { Session } from 'inspector';
+import { getSession } from '@/app/supabase-server';
 import Link from 'next/link';
 
 export default async function Navbar() {

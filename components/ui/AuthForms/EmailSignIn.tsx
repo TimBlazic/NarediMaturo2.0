@@ -1,9 +1,9 @@
 'use client';
 
 import Button from '@/components/ui/Button';
-import Link from 'next/link';
-import { signInWithEmail } from '@/utils/auth-helpers/server';
 import { handleRequest } from '@/utils/auth-helpers/client';
+import { signInWithEmail } from '@/utils/auth-helpers/server';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -19,7 +19,7 @@ export default function EmailSignIn({
   redirectMethod,
   disableButton
 }: EmailSignInProps) {
-  const router = useRouter(); // Always call useRouter
+  const router = redirectMethod === 'client' ? useRouter() : null;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -69,7 +69,7 @@ export default function EmailSignIn({
           </p>
           <p>
             <Link href="/signin/signup" className="font-light text-sm">
-              Don&apos;t have an account? Sign up
+              Don't have an account? Sign up
             </Link>
           </p>
         </>

@@ -1,11 +1,12 @@
 'use client';
 
 import Button from '@/components/ui/Button';
-
+import { handleRequest } from '@/utils/auth-helpers/client';
+import { signUp } from '@/utils/auth-helpers/server';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 interface SignUpProps {
   allowEmail: boolean;
@@ -13,7 +14,7 @@ interface SignUpProps {
 }
 
 export default function SignUp({ allowEmail, redirectMethod }: SignUpProps) {
-  const router = useRouter();
+  const router = redirectMethod === 'client' ? useRouter() : null;
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

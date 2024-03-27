@@ -1,10 +1,10 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState, useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import supabase from 'utils/supabaseClient';
-import Image from 'next/image';
 
 const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
   const [questionsData, setQuestionsData] = useState<any[]>([]);
@@ -139,7 +139,7 @@ const ResultsPage: React.FC<{ params: { testId: string } }> = ({ params }) => {
               </p>
               {question.picture && (
                 <div className="mt-4">
-                  <Image
+                  <img
                     className="mt-2"
                     width={400}
                     height={300}

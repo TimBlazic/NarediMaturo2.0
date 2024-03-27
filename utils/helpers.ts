@@ -13,7 +13,7 @@ export const getURL = (path: string = '') => {
           process.env.NEXT_PUBLIC_VERCEL_URL.trim() !== ''
         ? process.env.NEXT_PUBLIC_VERCEL_URL
         : // If neither is set, default to localhost for local development.
-          'http://localhost:3000/';
+          'https://naredimaturo.com/';
 
   // Trim the URL and remove trailing slash if exists.
   url = url.replace(/\/+$/, '');
