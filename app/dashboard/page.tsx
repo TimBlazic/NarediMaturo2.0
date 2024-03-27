@@ -1,22 +1,10 @@
 import { getSession, getUserDetails } from '@/app/supabase-server';
-import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import supabase from 'utils/supabaseClient';
 
-async function getCookieData() {
-  return new Promise((resolve) =>
-    setTimeout(() => {
-      resolve(cookies().getAll());
-    }, 1000)
-  );
-}
-
 export default async function Dashboard() {
   const session = await getSession();
-  const cookieData = await getCookieData();
-  console.log(cookieData);
-
   const userDetails = await getUserDetails();
 
   if (!session) {
