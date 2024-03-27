@@ -19,7 +19,7 @@ export default function EmailSignIn({
   redirectMethod,
   disableButton
 }: EmailSignInProps) {
-  const router = redirectMethod === 'client' ? useRouter() : null;
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
